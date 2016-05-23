@@ -1,0 +1,128 @@
+// List.cpp: определяет точку входа для консольного приложения.
+//
+
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+using namespace std;
+struct List
+{
+	int x;
+	List *Next;
+};
+struct My_List
+{
+	int k;
+	List *Front;
+};
+/*! Push(int _x, int index, My_List &my_list)
+* Функция добавляет элемент в список по заданному индексу
+*/
+void Push(int _x, int index, My_List &my_list)
+{
+	List  *l1 = new List;
+	l1->x = _x;
+	if (my_list.Front == 0)
+	{
+		l1->Next = 0;
+		my_list.k = 1;
+		my_list.Front = l1;
+	}
+	if (index == 0) 
+	{
+		l1->Next = my_list.Front;
+		my_list.Front = l1;
+		my_list.k = my_list.k + 1;
+	}
+	else 
+	{
+		List *l2 = my_list.Front;
+		for (int i = 1; i < index; i++)
+		{
+			l2 = l2->Next;
+			l1->Next = l2->Next;
+			l2->Next = l1;
+			my_list.k = my_list.k + 1;
+
+		}
+	}
+	cout << "The element was added" << endl;
+}
+/*! Pop(int index, My_List &my_list)
+* Функция удаляет элемент из списка по заданному индексу
+*/
+void Pop(int index, My_List &my_list) 
+{
+	List *l = my_list.Front;
+	if (index == 0)
+	{
+		my_list.Front = my_list.Front->Next;
+		my_list.k = my_list.k - 1;
+	}
+	else
+		for (int i = 1; i < index; i++) 
+		{
+			l = l->Next;
+			l->Next = l->Next->Next;
+			my_list.k = my_list.k - 1;
+		}
+	cout << "The element was deleted" << endl;
+}
+/*! Pop(int index, My_List &my_list)
+* Функция получает значение элемента списка по заданному индексу
+*/
+void Peek(int index, My_List &my_list) 
+{
+	if (index > my_list.k - 1) 
+	{
+		cout << "Error" << endl;
+	}
+	List *l = my_list.Front;
+	for (int i = 0; i < index; i++) 
+	{
+	     l = l->Next;
+	}
+		cout << l->x << endl;
+
+}
+
+int main()
+{
+	int n, x,index;
+	string str;
+	My_List mylist;
+	mylist.Front = 0;
+	mylist.k = 0;
+	cout << "N" << ">>";
+	cin >> n;
+	cout << endl;
+	for (int i = 0; i < n; i++)
+	{
+		cin >> str;
+		if (str == "add")
+		{
+			cout << ">>";
+			cin >> index;
+			cout << ">>";
+			cin >> x;
+		
+			Push(x, index, mylist);
+		}
+		if (str == "del")
+		{
+			cout << ">>";
+			cin >> index;
+			Pop(index, mylist);
+		}
+		if (str == "get")
+		{
+			cout << ">>";
+			cin >> index;
+			Peek(index, mylist);
+		}
+	}
+	return 0;
+}
+
+
+
