@@ -1,0 +1,66 @@
+#include "stdafx.h"
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
+
+int main()
+{
+	int knot, edge,num ; //узел, ребра, номер нашего узла
+	cin >> knot>>edge>>num;
+	int* rout=new int[knot]; //маршрут
+	rout = new int[knot];
+	int** count = new int*[knot]; //наш граф
+	for (int i = 0; i < knot; i++)
+	{
+		count[i] = new int[knot];
+	}
+
+	for (int i = 0; i < knot; i++)
+	{
+		for (int j = 0; j < knot; j++)
+		{
+			count[i][j] = 0;
+
+		}
+	}
+	int knot1, knot2;
+	for (int i = 0; i < edge; i++)
+	{
+		cin >> knot1 >> knot2;
+		cin >> count[knot1][knot2];
+	}
+	bool* checked=new bool[knot]; //посещение 
+	for (int i = 0; i<knot; i++)
+	{
+		checked[i] = false;
+		rout[i] = INT_MAX;
+	}
+	size_t u = 0;
+	rout[num] = 0;
+	for (int i = 0; i < (knot - 1); i++)
+	{
+		int min = INT_MAX;
+		for (int j = 0; j < knot; j++)
+		{
+			if (!checked[j] && (rout[j] <= min))
+			{
+				min = rout[j];
+				u = j;
+			}
+		}
+		checked[u] = true;
+		for (int k = 0; k < knot; k++)
+		{
+			if (!checked[k] && count[u][k] && (rout[u] != INT_MAX) && ((rout[u] + count[u][k]) < rout[k]))
+			{
+				rout[k] = rout[u] + count[u][k];
+			}
+		}
+	}
+	cout << endl << endl;
+	for (int i = 0; i < knot; i++)
+		cout << rout[i] << "  ";
+	return 0;
+}
+
