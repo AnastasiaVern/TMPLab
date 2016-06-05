@@ -1,128 +1,124 @@
-// List.cpp: определяет точку входа для консольного приложения.
-//
-
+// List
 #include "stdafx.h"
 #include <iostream>
 #include <string>
 using namespace std;
-struct List
-{
-	int x;
-	List *Next;
-};
+
 struct My_List
 {
-	int k;
-	List *Front;
+	My_List *Next = 0;
+	int x;
 };
-/*! Push(int _x, int index, My_List &my_list)
-* Функция добавляет элемент в список по заданному индексу
-*/
-void Push(int _x, int index, My_List &my_list)
-{
-	List  *l1 = new List;
-	l1->x = _x;
-	if (my_list.Front == 0)
-	{
-		l1->Next = 0;
-		my_list.k = 1;
-		my_list.Front = l1;
-	}
-	if (index == 0) 
-	{
-		l1->Next = my_list.Front;
-		my_list.Front = l1;
-		my_list.k = my_list.k + 1;
-	}
-	else 
-	{
-		List *l2 = my_list.Front;
-		for (int i = 1; i < index; i++)
-		{
-			l2 = l2->Next;
-			l1->Next = l2->Next;
-			l2->Next = l1;
-			my_list.k = my_list.k + 1;
 
+class List
+{
+	My_List *Front;
+public:
+	List() { Front = new My_List; }
+	/*! Push(int _x, int index, My_List &my_list)
+	* Функция добавляет элемент в список по заданному индексу
+	*/
+	void Push(int x, int index)
+	{
+		My_List *l = new My_List;
+		l->x = x;
+		if (index == 0) {
+			l->Next = Front;
+			Front = l;
+		}
+		else {
+			My_List *node = Front;
+			if (index > 1) {
+				for (int i = 0; i < index - 1; i++) {
+					if (node->Next != NULL)
+						node = node->Next;
+					else {
+						My_List *empty = new My_List;
+						node->Next = empty;
+						node = node->Next;
+					}
+				}
+			}
+
+			My_List *lElem = node->Next;
+			node->Next = l;
+			l->Next = lElem;
+		}
+
+	}
+	/*! Pop(int index, My_List &my_list)
+	* Функция удаляет элемент из списка по заданному индексу
+	*/
+	void Pop(int index)
+	{
+		if (index == 0) Front = Front->Next;
+		else {
+			My_List *l = Front;
+			if (index > 1) {
+				for (int i = 0; i < index - 1; i++)
+				{
+					l = l->Next;
+				}
+			}
+			My_List *node = l->Next;
+			l->Next = node->Next;
+			delete node;
 		}
 	}
-	cout << "The element was added" << endl;
-}
-/*! Pop(int index, My_List &my_list)
-* Функция удаляет элемент из списка по заданному индексу
-*/
-void Pop(int index, My_List &my_list) 
-{
-	List *l = my_list.Front;
-	if (index == 0)
+	/*! Peek(int index, My_List &my_list)
+	* Функция получает значение элемента списка по заданному индексу
+	*/
+	void Peek(int index)
 	{
-		my_list.Front = my_list.Front->Next;
-		my_list.k = my_list.k - 1;
-	}
-	else
-		for (int i = 1; i < index; i++) 
-		{
-			l = l->Next;
-			l->Next = l->Next->Next;
-			my_list.k = my_list.k - 1;
+		My_List *l = Front;
+		if (index != 0) {
+			for (int i = 0; i < index; i++)
+			{
+				l = l->Next;
+			}
 		}
-	cout << "The element was deleted" << endl;
-}
-/*! Pop(int index, My_List &my_list)
-* Функция получает значение элемента списка по заданному индексу
-*/
-void Peek(int index, My_List &my_list) 
-{
-	if (index > my_list.k - 1) 
-	{
-		cout << "Error" << endl;
-	}
-	List *l = my_list.Front;
-	for (int i = 0; i < index; i++) 
-	{
-	     l = l->Next;
-	}
 		cout << l->x << endl;
-
-}
+	}
+	~List()
+	{
+		while (Front != NULL)
+		{
+			My_List *l = Front->Next;
+			delete Front;
+			Front = l;
+		}
+	};
+};
 
 int main()
 {
-	int n, x,index;
+	int n, index, x;
+	List mylist;
 	string str;
-	My_List mylist;
-	mylist.Front = 0;
-	mylist.k = 0;
+
 	cout << "N" << ">>";
 	cin >> n;
 	cout << endl;
-	for (int i = 0; i < n; i++)
-	{
-		cin >> str;
-		if (str == "add")
-		{
+	for (int i = 0; i < n; i++) {
+		cin>>str;
+		if (str=="add") 
+		{ 
 			cout << ">>";
-			cin >> index;
-			cout << ">>";
-			cin >> x;
-		
-			Push(x, index, mylist);
+			cin >> index >> x;
+			mylist.Push(x, index);
 		}
 		if (str == "del")
 		{
 			cout << ">>";
 			cin >> index;
-			Pop(index, mylist);
+			mylist.Pop(index); 
 		}
-		if (str == "get")
+		if (str == "get") 
 		{
 			cout << ">>";
 			cin >> index;
-			Peek(index, mylist);
+			mylist.Peek(index); 
 		}
 	}
 	return 0;
 }
-
-
-
