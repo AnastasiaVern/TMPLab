@@ -40,9 +40,9 @@ public:
 				}
 			}
 
-			My_List *lElem = node->Next;
+			My_List *l2= node->Next;
 			node->Next = l;
-			l->Next = lElem;
+			l->Next = l2;
 		}
 
 	}
